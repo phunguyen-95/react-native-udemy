@@ -9,6 +9,8 @@ import {
   FlatList
 } from "react-native";
 import GoalInput from "./components/GoalInput";
+import Header from "./components/Header";
+import StartGameScreen from "./screens/StartGameSreen";
 
 export default function App() {
   const [goal, setGoal] = useState("");
@@ -39,40 +41,15 @@ export default function App() {
     setVisible(false);
   };
   return (
-    <View style={styles.container}>
-      <Button
-        title="Add New Goal"
-        visible={false}
-        onPress={() => setVisible(!visible)}
-      />
-
-      <GoalInput
-        visible={visible}
-        goal={goal}
-        addGoalHandler={addGoalHandler}
-        goalChangeHandler={goalChangeHandler}
-        closeModal={closeModal}
-      />
-
-      <ScrollView>
-        <FlatList
-          keyExtractor={item => item.id}
-          data={courseGoal}
-          renderItem={({ item }) => (
-            <GoalItem
-              title={item.value}
-              goalId={item.id}
-              onDelete={removeGoalHandler}
-            />
-          )}
-        ></FlatList>
-      </ScrollView>
+    <View style={styles.screen}>
+      <Header title="Guess a Number" />
+      <StartGameScreen />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 50
+  screen: {
+    flex: 1
   }
 });
