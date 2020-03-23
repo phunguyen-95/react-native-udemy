@@ -1,18 +1,31 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import Card from "./Card";
+import { View, Text, StyleSheet } from "react-native";
 import Colors from "../constant/Colors";
+import { bold } from "ansi-colors";
 
 const NumberInputContainer = props => {
-  return <View style={styles.number}>{props.children}</View>;
+  return (
+    <View style={styles.container}>
+      <Text style={styles.number} color={Colors.accent}>
+        {props.children}
+      </Text>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-  number: {
+  container: {
     borderWidth: 2,
     borderColor: Colors.accent,
-    borderRadius: 4,
-    padding: 6
+    borderRadius: 10,
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  number: {
+    fontSize: 18,
+    color: Colors.accent,
+    fontWeight: "bold"
   }
 });
 export default NumberInputContainer;

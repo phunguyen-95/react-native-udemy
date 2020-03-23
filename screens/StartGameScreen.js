@@ -12,9 +12,9 @@ import Card from "../components/Card";
 import Colors from "../constant/Colors";
 import Input from "../components/Input";
 import NumberInputContainer from "../components/NumberInputContainer";
-import { bold } from "ansi-colors";
 
 const StartGameScreen = props => {
+  const { startGameHandler } = props;
   const [enteredValue, setEnteredValue] = useState();
   const [confirmed, setConfirmed] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState("");
@@ -40,18 +40,23 @@ const StartGameScreen = props => {
     setConfirmed(true);
     setSelectedNumber(choosenNumber);
     setEnteredValue("");
+    Keyboard.dismiss();
   };
 
   let confirmedComponent = undefined;
-
+  console.log("selectedNumber", selectedNumber);
   if (confirmed) {
     confirmedComponent = (
       <Card style={styles.summaryContainer}>
-        <Text> Select number:</Text>
-        <NumberInputContainer>
-          <Text style={styles.choosenNumber}>{selectedNumber}</Text>
-        </NumberInputContainer>
-        <Text style={styles.startGameText}>START GAME</Text>
+        <Text> Select number</Text>
+        <NumberInputContainer>{selectedNumber}</NumberInputContainer>
+        <Button
+          title="START GAME"
+          style={styles.startGameText}
+          onPress={() => {
+            startGameHandler(selectedNumber);
+          }}
+        />
       </Card>
     );
   }
@@ -127,7 +132,7 @@ const styles = StyleSheet.create({
     width: 180
   },
   choosenNumber: {
-    color: Colors.accent,
+    color: "blue",
     fontSize: 18,
     fontWeight: "bold"
   }
