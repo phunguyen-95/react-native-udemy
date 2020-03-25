@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import { View, Text, StyleSheet, Button, Alert } from "react-native";
 import NumberInputContainer from "../components/NumberInputContainer";
 import Card from "../components/Card";
-
+import CustomeTitle from "../components/CustomTitle";
+import Constant from "../constant/Common";
 const generateRandomBetween = (min, max, exclude) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -15,19 +16,69 @@ const generateRandomBetween = (min, max, exclude) => {
 };
 
 const GameScreen = props => {
-  const {} = props;
+  const currentLow = useRef(1);
+  const currentHigh = useRef(100);
+
   const [currentGuess, setCurrentGuess] = useState(
-    generateRandomBetween(1, 100, props.userChoice)
+    generateRandomBetween(
+      currentLow.current,
+      currentHigh.current,
+      props.userChoise
+    )
   );
+
+  const [rounds, setRounds] = useState(0);
+
+  const nextGuessHandler = direction => {
+    const isWrongDirection =
+      (direction.toLowerCase() === Constant.LOWER.toLowerCase() &&
+        currentGuess <= props.userChoise) ||
+      (direction.toLowerCase() === Constant.GREATER.toLowerCase() &&
+        currentGuess > props.userChoise);
+    if (isWrongDirection) {
+      Alert.alert("Don' t lie!", "You know this is not true...", [
+        { text: "Sorry", style: "cancel" }
+      ]);
+      return;
+    }
+    if (direction.toLowerCase() === Constant.LOWER.toLowerCase()) {
+      currentHigh.current = currentGuess;
+    }
+    if (direction.toLowerCase() === Constant.GREATER.toLowerCase()) {
+      currentLow.current = currentGuess;
+    }
+
+    const nextNumber = generateRandomBetween(
+      currentLow.current,
+      currentHigh.current,
+      currentGuess
+    );
+    setCurrentGuess(nextNumber);
+    setRounds(currentRound => currentRound + 1);
+  };
+  const { userChoise, onGameOver } = props;
+
+  useEffect(() => {
+    if (currentGuess === userChoise) {
+      onGameOver(rounds);
+    }
+  }, [currentGuess, userChoise, onGameOver]);
+
   return (
     <View style={styles.screen}>
-      <Text>Game screen</Text>
+      <CustomeTitle>Opponent's guess</CustomeTitle>
       <NumberInputContainer>
         <Text>{currentGuess}</Text>
       </NumberInputContainer>
       <Card style={styles.buttonContainer}>
-        <Button title="LOWER" onPress={() => {}} />
-        <Button title="GREATER" onPress={() => {}} />
+        <Button
+          title={Constant.LOWER.toUpperCase()}
+          onPress={nextGuessHandler.bind(this, Constant.LOWER)}
+        />
+        <Button
+          title={Constant.GREATER.toUpperCase()}
+          onPress={nextGuessHandler.bind(this, Constant.GREATER)}
+        />
       </Card>
     </View>
   );

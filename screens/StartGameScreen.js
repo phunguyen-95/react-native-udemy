@@ -12,6 +12,7 @@ import Card from "../components/Card";
 import Colors from "../constant/Colors";
 import Input from "../components/Input";
 import NumberInputContainer from "../components/NumberInputContainer";
+import CustomeTitle from "../components/CustomTitle";
 
 const StartGameScreen = props => {
   const { startGameHandler } = props;
@@ -44,11 +45,10 @@ const StartGameScreen = props => {
   };
 
   let confirmedComponent = undefined;
-  console.log("selectedNumber", selectedNumber);
   if (confirmed) {
     confirmedComponent = (
       <Card style={styles.summaryContainer}>
-        <Text> Select number</Text>
+        <CustomeTitle>Selected Number: </CustomeTitle>
         <NumberInputContainer>{selectedNumber}</NumberInputContainer>
         <Button
           title="START GAME"
