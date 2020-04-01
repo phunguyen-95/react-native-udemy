@@ -12,7 +12,9 @@ import Card from "../components/Card";
 import Colors from "../constant/Colors";
 import Input from "../components/Input";
 import NumberInputContainer from "../components/NumberInputContainer";
-import CustomeTitle from "../components/CustomTitle";
+import BodyText from "../components/BodyText";
+import TitleText from "../components/TitleText";
+import MainButton from "../components/MainButton";
 
 const StartGameScreen = props => {
   const { startGameHandler } = props;
@@ -48,15 +50,16 @@ const StartGameScreen = props => {
   if (confirmed) {
     confirmedComponent = (
       <Card style={styles.summaryContainer}>
-        <CustomeTitle>Selected Number: </CustomeTitle>
+        <TitleText>Selected Number</TitleText>
         <NumberInputContainer>{selectedNumber}</NumberInputContainer>
-        <Button
-          title="START GAME"
-          style={styles.startGameText}
+
+        <MainButton
           onPress={() => {
             startGameHandler(selectedNumber);
           }}
-        />
+        >
+          START GAME
+        </MainButton>
       </Card>
     );
   }
@@ -68,9 +71,9 @@ const StartGameScreen = props => {
       }}
     >
       <View style={styles.screen}>
-        <Text style={styles.title}>The Start Screen</Text>
+        <BodyText style={styles.title}>The Start Screen</BodyText>
         <Card style={styles.inputContainer}>
-          <Text>Select a Number</Text>
+          <BodyText>Select a Number</BodyText>
           <Input
             value={enteredValue}
             keyboardType="numeric"
@@ -83,16 +86,12 @@ const StartGameScreen = props => {
           <View style={styles.buttonContainer}>
             <Button
               title="Reset"
-              onPress={() => {
-                resetInputHandler();
-              }}
+              onPress={resetInputHandler}
               color={Colors.primary}
             />
             <Button
               title="Confirm"
-              onPress={() => {
-                confirmInputHandler();
-              }}
+              onPress={confirmInputHandler}
               color={Colors.accent}
             />
           </View>
@@ -107,7 +106,8 @@ const styles = StyleSheet.create({
   screen: { flex: 1, padding: 10, alignItems: "center" },
   title: {
     fontSize: 20,
-    marginVertical: 10
+    marginVertical: 10,
+    fontFamily: "open-sans-bold"
   },
   inputContainer: {
     width: 300,
@@ -120,16 +120,11 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 15
   },
-  startGameText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "blue",
-    marginVertical: 12
-  },
+
   summaryContainer: {
     alignContent: "center",
     marginTop: 20,
-    width: 180
+    width: "80%"
   },
   choosenNumber: {
     color: "blue",

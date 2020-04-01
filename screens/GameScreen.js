@@ -1,9 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, StyleSheet, Button, Alert } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import NumberInputContainer from "../components/NumberInputContainer";
+import { Ionicons } from "@expo/vector-icons";
 import Card from "../components/Card";
-import CustomeTitle from "../components/CustomTitle";
+import TitleText from "../components/TitleText";
 import Constant from "../constant/Common";
+import DefaultStyle from "../constant/default-styles";
+import MainButton from "../components/MainButton";
+import BodyText from "../components/BodyText";
+
 const generateRandomBetween = (min, max, exclude) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -18,14 +23,14 @@ const generateRandomBetween = (min, max, exclude) => {
 const GameScreen = props => {
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
-
-  const [currentGuess, setCurrentGuess] = useState(
-    generateRandomBetween(
-      currentLow.current,
-      currentHigh.current,
-      props.userChoise
-    )
+  const initialGuess = generateRandomBetween(
+    currentLow.current,
+    currentHigh.current,
+    props.userChoise
   );
+
+  const [currentGuess, setCurrentGuess] = useState(initialGuess);
+  const [pastGuessess, setPastGuessess] = useState([]);
 
   const [rounds, setRounds] = useState(0);
 
@@ -45,7 +50,7 @@ const GameScreen = props => {
       currentHigh.current = currentGuess;
     }
     if (direction.toLowerCase() === Constant.GREATER.toLowerCase()) {
-      currentLow.current = currentGuess;
+      currentLow.current = currentGuess + 1;
     }
 
     const nextNumber = generateRandomBetween(
@@ -55,6 +60,7 @@ const GameScreen = props => {
     );
     setCurrentGuess(nextNumber);
     setRounds(currentRound => currentRound + 1);
+    setPastGuessess(curPastGuesses => [nextNumber, ...curPastGuesses]);
   };
   const { userChoise, onGameOver } = props;
 
@@ -64,22 +70,32 @@ const GameScreen = props => {
     }
   }, [currentGuess, userChoise, onGameOver]);
 
+  const renederItemList = (value, numberOfRound) => (
+    <View key={value} style={styles.listItem}>
+      <BodyText>#{numberOfRound}</BodyText>
+      <BodyText>{value}</BodyText>
+    </View>
+  );
+
   return (
     <View style={styles.screen}>
-      <CustomeTitle>Opponent's guess</CustomeTitle>
+      <TitleText style={DefaultStyle.bodyText}>Opponent's guess</TitleText>
       <NumberInputContainer>
         <Text>{currentGuess}</Text>
       </NumberInputContainer>
       <Card style={styles.buttonContainer}>
-        <Button
-          title={Constant.LOWER.toUpperCase()}
-          onPress={nextGuessHandler.bind(this, Constant.LOWER)}
-        />
-        <Button
-          title={Constant.GREATER.toUpperCase()}
-          onPress={nextGuessHandler.bind(this, Constant.GREATER)}
-        />
+        <MainButton onPress={nextGuessHandler.bind(this, Constant.LOWER)}>
+          <Ionicons name="md-remove" size={24} color="white" />
+        </MainButton>
+        <MainButton onPress={nextGuessHandler.bind(this, Constant.GREATER)}>
+          <Ionicons name="md-add" size={24} color="white" />
+        </MainButton>
       </Card>
+      <View style={styles.list}>
+        <ScrollView>
+          {pastGuessess.map(guess => renederItemList(guess, rounds))}
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -94,6 +110,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     marginTop: 20
+  },
+  list: { width: "80%" },
+  listItem: {
+    borderColor: "#ccc",
+    padding: 15,
+    marginVertical: 10,
+    backgroundColor: "white",
+    borderWidth: 1,
+    flexDirection: "row",
+    justifyContent: "space-around"
   }
 });
 
